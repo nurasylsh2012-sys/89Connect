@@ -1,0 +1,4823 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>89Connect</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+
+:root{
+    --bg:#f7f5f2;
+    --surface:#ffffff;
+    --surface-soft:#f1efec;
+
+    --brown:#806e5e;
+    --brown-dark:#5f5044;
+    --brown-light:#e9e2dc;
+
+    --text:#252321;
+    --muted:#817b75;
+
+    --border:#e4dfda;
+
+    --danger:#a04f47;
+    --success:#58715c;
+}
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:
+        Inter,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Arial,
+        sans-serif;
+}
+
+button,
+input,
+textarea,
+select{
+    font:inherit;
+}
+
+button{
+    cursor:pointer;
+}
+
+a{
+    color:inherit;
+}
+
+
+/* ================================
+   HEADER
+================================ */
+
+.header{
+    height:70px;
+    background:rgba(255,255,255,.94);
+    border-bottom:1px solid var(--border);
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    padding:0 34px;
+
+    position:sticky;
+    top:0;
+    z-index:100;
+
+    backdrop-filter:blur(12px);
+}
+
+.logo{
+    font-size:22px;
+    font-weight:800;
+    letter-spacing:-.6px;
+}
+
+.logo span{
+    color:var(--brown);
+}
+
+.header-right{
+    display:flex;
+    align-items:center;
+    gap:18px;
+}
+
+.language{
+    position:relative;
+}
+
+.language-button{
+    background:transparent;
+    border:1px solid var(--border);
+
+    padding:8px 12px;
+
+    border-radius:8px;
+
+    color:var(--text);
+
+    font-size:13px;
+}
+
+.language-menu{
+    position:absolute;
+    right:0;
+    top:45px;
+
+    background:white;
+    border:1px solid var(--border);
+
+    border-radius:10px;
+
+    padding:5px;
+
+    width:130px;
+
+    display:none;
+
+    box-shadow:0 12px 35px rgba(0,0,0,.08);
+}
+
+.language-menu.show{
+    display:block;
+}
+
+.language-option{
+    width:100%;
+
+    background:transparent;
+    border:none;
+
+    text-align:left;
+
+    padding:9px 10px;
+
+    border-radius:7px;
+
+    font-size:13px;
+}
+
+.language-option:hover{
+    background:var(--surface-soft);
+}
+
+.header-profile{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.header-avatar{
+    width:38px;
+    height:38px;
+
+    border-radius:50%;
+
+    object-fit:cover;
+
+    background:var(--brown-light);
+}
+
+.header-name{
+    font-size:14px;
+    font-weight:600;
+}
+
+
+/* ================================
+   LAYOUT
+================================ */
+
+.layout{
+    max-width:1280px;
+
+    margin:0 auto;
+
+    padding:28px 24px;
+
+    display:grid;
+
+    grid-template-columns:210px minmax(0,650px) 250px;
+
+    gap:28px;
+
+    align-items:start;
+}
+
+
+/* ================================
+   SIDEBAR
+================================ */
+
+.sidebar{
+    position:sticky;
+    top:96px;
+}
+
+.nav{
+    background:white;
+
+    border:1px solid var(--border);
+
+    border-radius:14px;
+
+    padding:7px;
+}
+
+.nav-button{
+    width:100%;
+
+    display:flex;
+    align-items:center;
+
+    background:transparent;
+    border:none;
+
+    padding:12px 13px;
+
+    border-radius:9px;
+
+    color:var(--muted);
+
+    font-size:14px;
+
+    text-align:left;
+
+    margin-bottom:2px;
+}
+
+.nav-button:hover{
+    background:var(--surface-soft);
+    color:var(--text);
+}
+
+.nav-button.active{
+    background:var(--brown-light);
+    color:var(--brown-dark);
+
+    font-weight:600;
+}
+
+.nav-icon{
+    width:22px;
+    margin-right:9px;
+
+    display:flex;
+    justify-content:center;
+}
+
+.nav-line{
+    height:1px;
+    background:var(--border);
+
+    margin:8px 5px;
+}
+
+
+/* ================================
+   MAIN
+================================ */
+
+.page{
+    display:none;
+}
+
+.page.active{
+    display:block;
+}
+
+.card{
+    background:white;
+
+    border:1px solid var(--border);
+
+    border-radius:15px;
+
+    padding:20px;
+
+    margin-bottom:16px;
+}
+
+.page-title{
+    font-size:25px;
+    font-weight:700;
+
+    letter-spacing:-.4px;
+
+    margin-bottom:5px;
+}
+
+.page-description{
+    color:var(--muted);
+
+    font-size:14px;
+}
+
+
+/* ================================
+   CREATE POST
+================================ */
+
+.create-post textarea{
+    width:100%;
+
+    min-height:100px;
+
+    border:1px solid var(--border);
+
+    border-radius:11px;
+
+    padding:13px;
+
+    margin-top:16px;
+
+    resize:vertical;
+
+    outline:none;
+
+    color:var(--text);
+}
+
+.create-post textarea:focus{
+    border-color:var(--brown);
+}
+
+.image-input{
+    width:100%;
+
+    border:1px solid var(--border);
+
+    border-radius:10px;
+
+    padding:11px;
+
+    margin-top:9px;
+
+    outline:none;
+}
+
+.create-footer{
+    display:flex;
+    justify-content:flex-end;
+
+    margin-top:10px;
+}
+
+.primary-button{
+    background:var(--brown-dark);
+
+    color:white;
+
+    border:none;
+
+    border-radius:9px;
+
+    padding:10px 17px;
+
+    font-size:13px;
+
+    transition:.15s;
+}
+
+.primary-button:hover{
+    opacity:.88;
+}
+
+.secondary-button{
+    background:var(--surface-soft);
+
+    color:var(--text);
+
+    border:1px solid var(--border);
+
+    border-radius:9px;
+
+    padding:10px 15px;
+
+    font-size:13px;
+}
+
+
+/* ================================
+   POSTS
+================================ */
+
+.post{
+    background:white;
+
+    border:1px solid var(--border);
+
+    border-radius:15px;
+
+    padding:19px;
+
+    margin-bottom:14px;
+}
+
+.post-header{
+    display:flex;
+    align-items:center;
+
+    gap:11px;
+
+    margin-bottom:15px;
+}
+
+.post-avatar{
+    width:43px;
+    height:43px;
+
+    border-radius:50%;
+
+    object-fit:cover;
+
+    background:var(--brown-light);
+}
+
+.post-name{
+    font-size:14px;
+    font-weight:650;
+}
+
+.post-meta{
+    color:var(--muted);
+
+    font-size:12px;
+
+    margin-top:3px;
+}
+
+.post-content{
+    font-size:14px;
+
+    line-height:1.6;
+
+    white-space:pre-wrap;
+
+    margin-bottom:13px;
+}
+
+.post-image{
+    width:100%;
+
+    max-height:520px;
+
+    object-fit:cover;
+
+    border-radius:11px;
+
+    margin-bottom:13px;
+}
+
+.post-actions{
+    display:flex;
+
+    gap:7px;
+
+    border-top:1px solid var(--border);
+
+    padding-top:11px;
+}
+
+.post-action{
+    background:var(--surface-soft);
+
+    border:none;
+
+    border-radius:8px;
+
+    padding:8px 11px;
+
+    font-size:12px;
+
+    color:var(--muted);
+}
+
+.post-action:hover{
+    color:var(--text);
+}
+
+.post-action.active{
+    background:var(--brown-light);
+
+    color:var(--brown-dark);
+
+    font-weight:600;
+}
+
+.post-delete{
+    margin-left:auto;
+}
+
+
+/* ================================
+   COMMENTS
+================================ */
+
+.comments{
+    margin-top:12px;
+
+    padding-top:12px;
+
+    border-top:1px solid var(--border);
+}
+
+.comment{
+    background:var(--surface-soft);
+
+    border-radius:9px;
+
+    padding:9px 11px;
+
+    margin-bottom:7px;
+}
+
+.comment-name{
+    font-size:12px;
+    font-weight:650;
+}
+
+.comment-text{
+    font-size:13px;
+
+    margin-top:3px;
+
+    line-height:1.4;
+}
+
+.comment-form{
+    display:flex;
+
+    gap:7px;
+
+    margin-top:9px;
+}
+
+.comment-input{
+    flex:1;
+
+    border:1px solid var(--border);
+
+    border-radius:8px;
+
+    padding:9px;
+
+    outline:none;
+
+    font-size:13px;
+}
+
+.comment-send{
+    border:none;
+
+    background:var(--brown-dark);
+
+    color:white;
+
+    border-radius:8px;
+
+    padding:0 14px;
+}
+
+
+/* ================================
+   STUDENTS
+================================ */
+
+.search-area{
+    display:flex;
+
+    gap:8px;
+
+    margin-top:17px;
+}
+
+.search-input{
+    flex:1;
+
+    border:1px solid var(--border);
+
+    border-radius:9px;
+
+    padding:11px;
+
+    outline:none;
+}
+
+.class-select{
+    width:145px;
+
+    border:1px solid var(--border);
+
+    border-radius:9px;
+
+    padding:11px;
+
+    outline:none;
+
+    background:white;
+}
+
+.students-grid{
+    display:grid;
+
+    grid-template-columns:
+        repeat(2,minmax(0,1fr));
+
+    gap:12px;
+}
+
+.student-card{
+    background:white;
+
+    border:1px solid var(--border);
+
+    border-radius:14px;
+
+    padding:16px;
+}
+
+.student-top{
+    display:flex;
+
+    align-items:center;
+
+    gap:11px;
+}
+
+.student-avatar{
+    width:52px;
+    height:52px;
+
+    border-radius:50%;
+
+    object-fit:cover;
+
+    background:var(--brown-light);
+}
+
+.student-name{
+    font-size:14px;
+    font-weight:650;
+}
+
+.student-class{
+    font-size:12px;
+
+    color:var(--muted);
+
+    margin-top:3px;
+}
+
+.student-bio{
+    color:var(--muted);
+
+    font-size:12px;
+
+    line-height:1.45;
+
+    margin-top:11px;
+}
+
+.student-button{
+    width:100%;
+
+    margin-top:12px;
+}
+
+
+/* ================================
+   PROFILE
+================================ */
+
+.profile-cover{
+    height:120px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #e8dfd7,
+            #f5f1ed
+        );
+
+    border-radius:11px;
+
+    margin-bottom:0;
+}
+
+.profile-main{
+    margin-top:-45px;
+
+    padding:0 20px 20px;
+}
+
+.profile-avatar-large{
+    width:90px;
+    height:90px;
+
+    border-radius:50%;
+
+    object-fit:cover;
+
+    border:5px solid white;
+
+    background:var(--brown-light);
+}
+
+.profile-name-large{
+    font-size:23px;
+
+    font-weight:700;
+
+    margin-top:9px;
+}
+
+.profile-username{
+    color:var(--muted);
+
+    font-size:13px;
+
+    margin-top:2px;
+}
+
+.profile-class{
+    display:inline-block;
+
+    background:var(--brown-light);
+
+    color:var(--brown-dark);
+
+    padding:5px 9px;
+
+    border-radius:20px;
+
+    font-size:11px;
+
+    margin-top:8px;
+}
+
+.profile-bio{
+    margin-top:16px;
+
+    font-size:14px;
+
+    color:var(--muted);
+
+    line-height:1.55;
+}
+
+.socials{
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:7px;
+
+    margin-top:14px;
+}
+
+.social{
+    background:var(--surface-soft);
+
+    border:1px solid var(--border);
+
+    text-decoration:none;
+
+    padding:7px 10px;
+
+    border-radius:8px;
+
+    font-size:12px;
+}
+
+.profile-buttons{
+    display:flex;
+
+    gap:8px;
+
+    margin-top:17px;
+}
+
+
+/* ================================
+   FRIENDS
+================================ */
+
+.friend-row{
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:12px;
+
+    padding:13px 0;
+
+    border-bottom:1px solid var(--border);
+}
+
+.friend-row:last-child{
+    border-bottom:none;
+}
+
+.friend-user{
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+}
+
+.friend-avatar{
+    width:44px;
+    height:44px;
+
+    border-radius:50%;
+
+    object-fit:cover;
+
+    background:var(--brown-light);
+}
+
+.friend-name{
+    font-size:13px;
+    font-weight:650;
+}
+
+.friend-class{
+    font-size:11px;
+    color:var(--muted);
+
+    margin-top:3px;
+}
+
+
+/* ================================
+   NOTIFICATIONS
+================================ */
+
+.notification{
+    padding:14px;
+
+    border:1px solid var(--border);
+
+    border-radius:11px;
+
+    margin-bottom:8px;
+}
+
+.notification.unread{
+    background:var(--brown-light);
+}
+
+.notification-text{
+    font-size:13px;
+
+    line-height:1.45;
+}
+
+.notification-date{
+    font-size:11px;
+
+    color:var(--muted);
+
+    margin-top:5px;
+}
+
+
+/* ================================
+   SETTINGS
+================================ */
+
+.form-group{
+    margin-bottom:15px;
+}
+
+.form-label{
+    display:block;
+
+    font-size:12px;
+
+    font-weight:600;
+
+    margin-bottom:6px;
+}
+
+.form-input,
+.form-textarea{
+    width:100%;
+
+    border:1px solid var(--border);
+
+    border-radius:9px;
+
+    padding:11px;
+
+    outline:none;
+
+    color:var(--text);
+}
+
+.form-textarea{
+    min-height:100px;
+
+    resize:vertical;
+}
+
+.form-input:focus,
+.form-textarea:focus{
+    border-color:var(--brown);
+}
+
+.status{
+    display:none;
+
+    padding:10px;
+
+    border-radius:9px;
+
+    font-size:13px;
+
+    margin-bottom:14px;
+}
+
+.status.show{
+    display:block;
+}
+
+.status.error{
+    background:#f3dfdc;
+
+    color:var(--danger);
+}
+
+.status.success{
+    background:#e1ebe2;
+
+    color:var(--success);
+}
+
+
+/* ================================
+   RIGHT PANEL
+================================ */
+
+.right-card{
+    background:white;
+
+    border:1px solid var(--border);
+
+    border-radius:14px;
+
+    padding:17px;
+
+    margin-bottom:13px;
+}
+
+.right-title{
+    font-size:13px;
+
+    font-weight:650;
+
+    margin-bottom:10px;
+}
+
+.right-line{
+    font-size:12px;
+
+    color:var(--muted);
+
+    padding:8px 0;
+
+    border-bottom:1px solid var(--border);
+}
+
+.right-line:last-child{
+    border-bottom:none;
+}
+
+
+/* ================================
+   MODAL
+================================ */
+
+.modal{
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(25,22,20,.38);
+
+    display:none;
+
+    align-items:center;
+
+    justify-content:center;
+
+    padding:20px;
+
+    z-index:300;
+}
+
+.modal.show{
+    display:flex;
+}
+
+.modal-box{
+    width:100%;
+
+    max-width:480px;
+
+    max-height:90vh;
+
+    overflow:auto;
+
+    background:white;
+
+    border-radius:16px;
+
+    padding:21px;
+}
+
+.modal-header{
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    margin-bottom:18px;
+}
+
+.close-button{
+    width:32px;
+    height:32px;
+
+    border:none;
+
+    border-radius:50%;
+
+    background:var(--surface-soft);
+}
+
+
+/* ================================
+   LOADING
+================================ */
+
+.loading,
+.empty{
+    text-align:center;
+
+    color:var(--muted);
+
+    padding:30px 15px;
+
+    font-size:13px;
+}
+
+
+/* ================================
+   MOBILE
+================================ */
+
+@media(max-width:1050px){
+
+    .layout{
+        grid-template-columns:
+            190px minmax(0,1fr);
+    }
+
+    .rightbar{
+        display:none;
+    }
+
+}
+
+@media(max-width:720px){
+
+    .header{
+        padding:0 15px;
+    }
+
+    .header-name{
+        display:none;
+    }
+
+    .layout{
+        display:block;
+
+        padding:15px 10px;
+    }
+
+    .sidebar{
+        position:static;
+
+        margin-bottom:12px;
+    }
+
+    .nav{
+        display:flex;
+
+        overflow-x:auto;
+
+        gap:3px;
+    }
+
+    .nav-button{
+        white-space:nowrap;
+
+        width:auto;
+
+        margin:0;
+    }
+
+    .nav-line{
+        display:none;
+    }
+
+    .students-grid{
+        grid-template-columns:1fr;
+    }
+
+    .search-area{
+        flex-direction:column;
+    }
+
+    .class-select{
+        width:100%;
+    }
+
+    .profile-main{
+        padding:0 15px 18px;
+    }
+
+    .card{
+        padding:16px;
+    }
+
+}
+
+</style>
+</head>
+
+
+<body>
+
+
+<!-- =========================================
+     HEADER
+========================================= -->
+
+<header class="header">
+
+    <div class="logo">
+        89<span>Connect</span>
+    </div>
+
+
+    <div class="header-right">
+
+        <div class="language">
+
+            <button
+                class="language-button"
+                onclick="toggleLanguageMenu()"
+            >
+                <span id="currentLanguage">RU</span>
+                <span>⌄</span>
+            </button>
+
+
+            <div
+                id="languageMenu"
+                class="language-menu"
+            >
+
+                <button
+                    class="language-option"
+                    onclick="changeLanguage('ru')"
+                >
+                    Русский
+                </button>
+
+                <button
+                    class="language-option"
+                    onclick="changeLanguage('kz')"
+                >
+                    Қазақша
+                </button>
+
+                <button
+                    class="language-option"
+                    onclick="changeLanguage('en')"
+                >
+                    English
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div class="header-profile">
+
+            <span
+                id="headerName"
+                class="header-name"
+            >
+                Загрузка...
+            </span>
+
+            <img
+                id="headerAvatar"
+                class="header-avatar"
+                src=""
+            >
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<!-- =========================================
+     LAYOUT
+========================================= -->
+
+<div class="layout">
+
+
+<!-- =========================================
+     SIDEBAR
+========================================= -->
+
+<aside class="sidebar">
+
+    <nav class="nav">
+
+
+        <button
+            class="nav-button active"
+            onclick="showPage('feedPage',this)"
+        >
+
+            <span class="nav-icon">⌂</span>
+
+            <span data-i18n="home">
+                Главная
+            </span>
+
+        </button>
+
+
+        <button
+            class="nav-button"
+            onclick="showPage('studentsPage',this)"
+        >
+
+            <span class="nav-icon">◯</span>
+
+            <span data-i18n="students">
+                Ученики
+            </span>
+
+        </button>
+
+
+        <button
+            class="nav-button"
+            onclick="showPage('friendsPage',this)"
+        >
+
+            <span class="nav-icon">+</span>
+
+            <span data-i18n="friends">
+                Друзья
+            </span>
+
+        </button>
+
+
+        <button
+            class="nav-button"
+            onclick="showPage('notificationsPage',this)"
+        >
+
+            <span class="nav-icon">○</span>
+
+            <span data-i18n="notifications">
+                Уведомления
+            </span>
+
+        </button>
+
+
+        <div class="nav-line"></div>
+
+
+        <button
+            class="nav-button"
+            onclick="showPage('profilePage',this)"
+        >
+
+            <span class="nav-icon">◉</span>
+
+            <span data-i18n="profile">
+                Профиль
+            </span>
+
+        </button>
+
+
+        <button
+            class="nav-button"
+            onclick="showPage('settingsPage',this)"
+        >
+
+            <span class="nav-icon">□</span>
+
+            <span data-i18n="settings">
+                Настройки
+            </span>
+
+        </button>
+
+
+        <button
+            class="nav-button"
+            onclick="logout()"
+        >
+
+            <span class="nav-icon">→</span>
+
+            <span data-i18n="logout">
+                Выйти
+            </span>
+
+        </button>
+
+
+    </nav>
+
+</aside>
+
+
+<!-- =========================================
+     MAIN
+========================================= -->
+
+<main>
+
+
+<!-- =========================================
+     HOME
+========================================= -->
+
+<section
+    id="feedPage"
+    class="page active"
+>
+
+    <div class="card">
+
+        <div class="page-title"
+             data-i18n="feedTitle">
+            Главная
+        </div>
+
+        <div
+            class="page-description"
+            data-i18n="feedDescription"
+        >
+            Общение и новости школы №89
+        </div>
+
+    </div>
+
+
+    <div class="card create-post">
+
+        <div
+            style="font-size:15px;font-weight:650"
+            data-i18n="createPost"
+        >
+            Создать публикацию
+        </div>
+
+
+        <textarea
+            id="postContent"
+            data-placeholder="postPlaceholder"
+            placeholder="Что нового?"
+        ></textarea>
+
+
+        <input
+            id="postImage"
+            class="image-input"
+            data-placeholder="imagePlaceholder"
+            placeholder="Ссылка на изображение — необязательно"
+        >
+
+
+        <div class="create-footer">
+
+            <button
+                class="primary-button"
+                onclick="createPost()"
+                data-i18n="publish"
+            >
+                Опубликовать
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <div id="feed">
+
+        <div class="card loading">
+            Загрузка...
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================
+     STUDENTS
+========================================= -->
+
+<section
+    id="studentsPage"
+    class="page"
+>
+
+    <div class="card">
+
+        <div
+            class="page-title"
+            data-i18n="students"
+        >
+            Ученики
+        </div>
+
+        <div
+            class="page-description"
+            data-i18n="studentsDescription"
+        >
+            Найди учеников школы №89
+        </div>
+
+
+        <div class="search-area">
+
+            <input
+                id="studentSearch"
+                class="search-input"
+                data-placeholder="searchPlaceholder"
+                placeholder="Поиск..."
+                oninput="filterStudents()"
+            >
+
+
+            <select
+                id="classFilter"
+                class="class-select"
+                onchange="filterStudents()"
+            >
+
+                <option value=""
+                        data-i18n="allClasses">
+                    Все классы
+                </option>
+
+                <option value="9А">9А</option>
+                <option value="9Б">9Б</option>
+                <option value="9В">9В</option>
+                <option value="9Г">9Г</option>
+                <option value="9Д">9Д</option>
+                <option value="9Е">9Е</option>
+                <option value="9Ж">9Ж</option>
+                <option value="9З">9З</option>
+                <option value="9И">9И</option>
+
+            </select>
+
+        </div>
+
+    </div>
+
+
+    <div
+        id="studentsGrid"
+        class="students-grid"
+    ></div>
+
+</section>
+
+
+<!-- =========================================
+     FRIENDS
+========================================= -->
+
+<section
+    id="friendsPage"
+    class="page"
+>
+
+    <div class="card">
+
+        <div
+            class="page-title"
+            data-i18n="friends"
+        >
+            Друзья
+        </div>
+
+        <div
+            class="page-description"
+            data-i18n="friendsDescription"
+        >
+            Твои контакты в 89Connect
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <div
+            style="font-size:15px;font-weight:650;margin-bottom:8px"
+            data-i18n="requests"
+        >
+            Заявки
+        </div>
+
+
+        <div id="incomingRequests">
+
+            <div class="loading">
+                Загрузка...
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <div
+            style="font-size:15px;font-weight:650;margin-bottom:8px"
+            data-i18n="myFriends"
+        >
+            Мои друзья
+        </div>
+
+
+        <div id="friendsList">
+
+            <div class="loading">
+                Загрузка...
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================
+     NOTIFICATIONS
+========================================= -->
+
+<section
+    id="notificationsPage"
+    class="page"
+>
+
+    <div class="card">
+
+        <div
+            class="page-title"
+            data-i18n="notifications"
+        >
+            Уведомления
+        </div>
+
+        <div
+            class="page-description"
+            data-i18n="notificationsDescription"
+        >
+            Последние события
+        </div>
+
+    </div>
+
+
+    <div id="notificationsList">
+
+        <div class="card loading">
+            Загрузка...
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================
+     PROFILE
+========================================= -->
+
+<section
+    id="profilePage"
+    class="page"
+>
+
+    <div
+        id="profileCard"
+        class="card loading"
+    >
+        Загрузка профиля...
+    </div>
+
+</section>
+
+
+<!-- =========================================
+     SETTINGS
+========================================= -->
+
+<section
+    id="settingsPage"
+    class="page"
+>
+
+    <div class="card">
+
+        <div
+            class="page-title"
+            data-i18n="settings"
+        >
+            Настройки
+        </div>
+
+        <div
+            class="page-description"
+            data-i18n="settingsDescription"
+        >
+            Управление профилем
+        </div>
+
+
+        <div
+            id="editStatus"
+            class="status"
+        ></div>
+
+
+        <div style="margin-top:22px">
+
+
+            <div class="form-group">
+
+                <label
+                    class="form-label"
+                    data-i18n="username"
+                >
+                    Username
+                </label>
+
+                <input
+                    id="editUsername"
+                    class="form-input"
+                    placeholder="username"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label
+                    class="form-label"
+                    data-i18n="bio"
+                >
+                    О себе
+                </label>
+
+                <textarea
+                    id="editBio"
+                    class="form-textarea"
+                    data-placeholder="bioPlaceholder"
+                    placeholder="Расскажи о себе..."
+                ></textarea>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label
+                    class="form-label"
+                    data-i18n="avatar"
+                >
+                    Ссылка на аватар
+                </label>
+
+                <input
+                    id="editAvatar"
+                    class="form-input"
+                    placeholder="https://..."
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label
+                    class="form-label"
+                    data-i18n="instagram"
+                >
+                    Instagram
+                </label>
+
+                <input
+                    id="editInstagram"
+                    class="form-input"
+                    placeholder="@username"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label
+                    class="form-label"
+                    data-i18n="telegram"
+                >
+                    Telegram
+                </label>
+
+                <input
+                    id="editTelegram"
+                    class="form-input"
+                    placeholder="@username"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label
+                    class="form-label"
+                    data-i18n="discord"
+                >
+                    Discord
+                </label>
+
+                <input
+                    id="editDiscord"
+                    class="form-input"
+                    placeholder="username"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label
+                    class="form-label"
+                    data-i18n="website"
+                >
+                    Website
+                </label>
+
+                <input
+                    id="editWebsite"
+                    class="form-input"
+                    placeholder="https://..."
+                >
+
+            </div>
+
+
+            <button
+                class="primary-button"
+                onclick="saveSettings()"
+                data-i18n="save"
+            >
+                Сохранить
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+</main>
+
+
+<!-- =========================================
+     RIGHT BAR
+========================================= -->
+
+<aside class="rightbar">
+
+
+    <div class="right-card">
+
+        <div
+            class="right-title"
+            data-i18n="school"
+        >
+            Школа №89
+        </div>
+
+        <div class="right-line">
+            89Connect
+        </div>
+
+        <div
+            class="right-line"
+            data-i18n="community"
+        >
+            Школьное сообщество
+        </div>
+
+        <div
+            class="right-line"
+            data-i18n="students"
+        >
+            Ученики
+        </div>
+
+    </div>
+
+
+    <div class="right-card">
+
+        <div
+            class="right-title"
+            data-i18n="yourClass"
+        >
+            Твой класс
+        </div>
+
+        <div
+            id="rightClass"
+            class="right-line"
+        >
+            —
+        </div>
+
+    </div>
+
+
+</aside>
+
+
+</div>
+
+
+<!-- =========================================
+     PROFILE MODAL
+========================================= -->
+
+<div
+    id="profileModal"
+    class="modal"
+    onclick="closeModal(event)"
+>
+
+    <div
+        class="modal-box"
+        onclick="event.stopPropagation()"
+    >
+
+        <div class="modal-header">
+
+            <strong
+                data-i18n="profile"
+            >
+                Профиль
+            </strong>
+
+            <button
+                class="close-button"
+                onclick="closeProfileModal()"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <div id="modalProfile">
+            Загрузка...
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   SUPABASE
+========================================================= */
+
+const SUPABASE_URL =
+    "https://bqbwrqmlmfehzkoifkiz.supabase.co";
+
+const SUPABASE_KEY =
+    "sb_publishable_X5SdlHOKGcZ8RygNFQM2Tg__idY7zWd";
+
+
+const db =
+    supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
+
+
+let currentUser = null;
+let currentProfile = null;
+
+let allStudents = [];
+let allPosts = [];
+
+
+/* =========================================================
+   TRANSLATIONS
+========================================================= */
+
+const translations = {
+
+    ru:{
+
+        home:"Главная",
+        students:"Ученики",
+        friends:"Друзья",
+        notifications:"Уведомления",
+        profile:"Профиль",
+        settings:"Настройки",
+        logout:"Выйти",
+
+        feedTitle:"Главная",
+        feedDescription:"Общение и новости школы №89",
+
+        createPost:"Создать публикацию",
+        postPlaceholder:"Что нового?",
+        imagePlaceholder:"Ссылка на изображение — необязательно",
+        publish:"Опубликовать",
+
+        studentsDescription:"Найди учеников школы №89",
+        searchPlaceholder:"Поиск...",
+        allClasses:"Все классы",
+
+        friendsDescription:"Твои контакты в 89Connect",
+        requests:"Заявки",
+        myFriends:"Мои друзья",
+
+        notificationsDescription:"Последние события",
+
+        settingsDescription:"Управление профилем",
+
+        username:"Username",
+        bio:"О себе",
+        bioPlaceholder:"Расскажи о себе...",
+        avatar:"Ссылка на аватар",
+        instagram:"Instagram",
+        telegram:"Telegram",
+        discord:"Discord",
+        website:"Website",
+        save:"Сохранить",
+
+        school:"Школа №89",
+        community:"Школьное сообщество",
+        yourClass:"Твой класс",
+
+        openProfile:"Открыть профиль",
+        addFriend:"Добавить в друзья",
+        requestSent:"Заявка отправлена",
+        accept:"Принять",
+        youAreFriends:"Вы друзья",
+
+        noStudents:"Никого не найдено.",
+        noFriends:"Пока нет друзей.",
+        noRequests:"Нет новых заявок.",
+        noNotifications:"Пока нет уведомлений.",
+        noPosts:"Пока нет публикаций.",
+
+        saved:"Профиль сохранён.",
+        deletePost:"Удалить публикацию?",
+
+        like:"лайк",
+        comment:"комментарий"
+
+    },
+
+
+    kz:{
+
+        home:"Басты бет",
+        students:"Оқушылар",
+        friends:"Достар",
+        notifications:"Хабарламалар",
+        profile:"Профиль",
+        settings:"Баптаулар",
+        logout:"Шығу",
+
+        feedTitle:"Басты бет",
+        feedDescription:"№89 мектеп жаңалықтары мен байланыс",
+
+        createPost:"Жазба жасау",
+        postPlaceholder:"Не жаңалық?",
+        imagePlaceholder:"Сурет сілтемесі — міндетті емес",
+        publish:"Жариялау",
+
+        studentsDescription:"№89 мектеп оқушыларын тап",
+        searchPlaceholder:"Іздеу...",
+        allClasses:"Барлық сыныптар",
+
+        friendsDescription:"89Connect желісіндегі достарың",
+        requests:"Өтініштер",
+        myFriends:"Менің достарым",
+
+        notificationsDescription:"Соңғы оқиғалар",
+
+        settingsDescription:"Профильді басқару",
+
+        username:"Username",
+        bio:"Өзің туралы",
+        bioPlaceholder:"Өзің туралы жаз...",
+        avatar:"Аватар сілтемесі",
+        instagram:"Instagram",
+        telegram:"Telegram",
+        discord:"Discord",
+        website:"Website",
+        save:"Сақтау",
+
+        school:"№89 мектеп",
+        community:"Мектеп қауымдастығы",
+        yourClass:"Сенің сыныбың",
+
+        openProfile:"Профильді ашу",
+        addFriend:"Досқа қосу",
+        requestSent:"Өтініш жіберілді",
+        accept:"Қабылдау",
+        youAreFriends:"Сендер достарсыңдар",
+
+        noStudents:"Ешкім табылмады.",
+        noFriends:"Әзірге достар жоқ.",
+        noRequests:"Жаңа өтініштер жоқ.",
+        noNotifications:"Әзірге хабарламалар жоқ.",
+        noPosts:"Әзірге жазбалар жоқ.",
+
+        saved:"Профиль сақталды.",
+        deletePost:"Жазбаны өшіру керек пе?",
+
+        like:"лайк",
+        comment:"пікір"
+
+    },
+
+
+    en:{
+
+        home:"Home",
+        students:"Students",
+        friends:"Friends",
+        notifications:"Notifications",
+        profile:"Profile",
+        settings:"Settings",
+        logout:"Log out",
+
+        feedTitle:"Home",
+        feedDescription:"School №89 community and updates",
+
+        createPost:"Create a post",
+        postPlaceholder:"What's new?",
+        imagePlaceholder:"Image URL — optional",
+        publish:"Publish",
+
+        studentsDescription:"Find students from School №89",
+        searchPlaceholder:"Search...",
+        allClasses:"All classes",
+
+        friendsDescription:"Your contacts on 89Connect",
+        requests:"Requests",
+        myFriends:"My friends",
+
+        notificationsDescription:"Recent activity",
+
+        settingsDescription:"Manage your profile",
+
+        username:"Username",
+        bio:"About",
+        bioPlaceholder:"Tell people about yourself...",
+        avatar:"Avatar URL",
+        instagram:"Instagram",
+        telegram:"Telegram",
+        discord:"Discord",
+        website:"Website",
+        save:"Save",
+
+        school:"School №89",
+        community:"School community",
+        yourClass:"Your class",
+
+        openProfile:"Open profile",
+        addFriend:"Add friend",
+        requestSent:"Request sent",
+        accept:"Accept",
+        youAreFriends:"Friends",
+
+        noStudents:"No students found.",
+        noFriends:"No friends yet.",
+        noRequests:"No new requests.",
+        noNotifications:"No notifications yet.",
+        noPosts:"No posts yet.",
+
+        saved:"Profile saved.",
+        deletePost:"Delete this post?",
+
+        like:"likes",
+        comment:"comments"
+
+    }
+
+};
+
+
+let currentLanguage =
+    localStorage.getItem("89connect-language")
+    || "ru";
+
+
+function t(key){
+
+    return (
+        translations[currentLanguage][key]
+        ||
+        translations.ru[key]
+        ||
+        key
+    );
+
+}
+
+
+function applyLanguage(){
+
+    document.documentElement.lang =
+        currentLanguage;
+
+
+    document
+        .querySelectorAll("[data-i18n]")
+        .forEach(element => {
+
+            const key =
+                element.dataset.i18n;
+
+            element.textContent =
+                t(key);
+
+        });
+
+
+    document
+        .querySelectorAll("[data-placeholder]")
+        .forEach(element => {
+
+            const key =
+                element.dataset.placeholder;
+
+            element.placeholder =
+                t(key);
+
+        });
+
+
+    document.getElementById(
+        "currentLanguage"
+    ).textContent =
+        currentLanguage.toUpperCase();
+
+
+    localStorage.setItem(
+        "89connect-language",
+        currentLanguage
+    );
+
+}
+
+
+function toggleLanguageMenu(){
+
+    document
+        .getElementById("languageMenu")
+        .classList.toggle("show");
+
+}
+
+
+function changeLanguage(language){
+
+    currentLanguage =
+        language;
+
+    applyLanguage();
+
+    document
+        .getElementById("languageMenu")
+        .classList.remove("show");
+
+    renderStudents(allStudents);
+
+}
+
+
+document.addEventListener(
+    "click",
+    event => {
+
+        const language =
+            document.querySelector(
+                ".language"
+            );
+
+        if(
+            language &&
+            !language.contains(event.target)
+        ){
+
+            document
+                .getElementById("languageMenu")
+                .classList.remove("show");
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   START
+========================================================= */
+
+window.addEventListener(
+    "DOMContentLoaded",
+    async () => {
+
+        applyLanguage();
+
+
+        const {
+            data:{
+                session
+            }
+        } =
+        await db.auth.getSession();
+
+
+        if(!session){
+
+            window.location.href =
+                "auth.html";
+
+            return;
+        }
+
+
+        currentUser =
+            session.user;
+
+
+        await loadMyProfile();
+
+        await loadFeed();
+
+        await loadStudents();
+
+        await loadFriends();
+
+        await loadNotifications();
+
+    }
+);
+
+
+/* =========================================================
+   PROFILE
+========================================================= */
+
+async function loadMyProfile(){
+
+    const {
+        data,
+        error
+    } =
+    await db
+        .from("profiles")
+        .select("*")
+        .eq(
+            "id",
+            currentUser.id
+        )
+        .maybeSingle();
+
+
+    if(error){
+
+        document.getElementById(
+            "profileCard"
+        ).innerHTML =
+            escapeHtml(error.message);
+
+        return;
+    }
+
+
+    if(!data){
+
+        const metadata =
+            currentUser.user_metadata
+            || {};
+
+
+        const {
+            data:newProfile,
+            error:insertError
+        } =
+        await db
+            .from("profiles")
+            .insert({
+
+                id:
+                    currentUser.id,
+
+                first_name:
+                    metadata.first_name
+                    || "",
+
+                last_name:
+                    metadata.last_name
+                    || "",
+
+                class_name:
+                    metadata.class_name
+                    || ""
+
+            })
+            .select()
+            .single();
+
+
+        if(insertError){
+
+            document.getElementById(
+                "profileCard"
+            ).innerHTML =
+                escapeHtml(
+                    insertError.message
+                );
+
+            return;
+        }
+
+
+        currentProfile =
+            newProfile;
+
+    }else{
+
+        currentProfile =
+            data;
+
+    }
+
+
+    renderMyProfile();
+
+}
+
+
+/* =========================================================
+   MY PROFILE
+========================================================= */
+
+function renderMyProfile(){
+
+    const fullName =
+        `${currentProfile.first_name || ""}
+        ${currentProfile.last_name || ""}`
+        .trim()
+        ||
+        "User";
+
+
+    const avatar =
+        getAvatar(currentProfile);
+
+
+    document.getElementById(
+        "headerName"
+    ).textContent =
+        fullName;
+
+
+    document.getElementById(
+        "headerAvatar"
+    ).src =
+        avatar;
+
+
+    document.getElementById(
+        "rightClass"
+    ).textContent =
+        currentProfile.class_name
+        || "—";
+
+
+    document.getElementById(
+        "profileCard"
+    ).className =
+        "card";
+
+
+    document.getElementById(
+        "profileCard"
+    ).innerHTML = `
+
+        <div class="profile-cover"></div>
+
+        <div class="profile-main">
+
+            <img
+                class="profile-avatar-large"
+                src="${escapeAttribute(avatar)}"
+            >
+
+
+            <div class="profile-name-large">
+                ${escapeHtml(fullName)}
+            </div>
+
+
+            ${
+                currentProfile.username
+                ?
+                `
+                <div class="profile-username">
+                    @${escapeHtml(
+                        currentProfile.username
+                    )}
+                </div>
+                `
+                :
+                ""
+            }
+
+
+            <div class="profile-class">
+                ${escapeHtml(
+                    currentProfile.class_name
+                    || "—"
+                )}
+            </div>
+
+
+            <div class="profile-bio">
+                ${
+                    currentProfile.bio
+                    ?
+                    escapeHtml(
+                        currentProfile.bio
+                    )
+                    :
+                    "—"
+                }
+            </div>
+
+
+            <div class="socials">
+                ${socialLinks(
+                    currentProfile
+                )}
+            </div>
+
+
+            <div class="profile-buttons">
+
+                <button
+                    class="primary-button"
+                    onclick="showPageById('settingsPage')"
+                >
+                    ${t("settings")}
+                </button>
+
+            </div>
+
+        </div>
+
+    `;
+
+
+    fillSettings();
+
+}
+
+
+/* =========================================================
+   SETTINGS
+========================================================= */
+
+function fillSettings(){
+
+    if(!currentProfile){
+
+        return;
+    }
+
+
+    document.getElementById(
+        "editUsername"
+    ).value =
+        currentProfile.username
+        || "";
+
+
+    document.getElementById(
+        "editBio"
+    ).value =
+        currentProfile.bio
+        || "";
+
+
+    document.getElementById(
+        "editAvatar"
+    ).value =
+        currentProfile.avatar_url
+        || "";
+
+
+    document.getElementById(
+        "editInstagram"
+    ).value =
+        currentProfile.instagram
+        || "";
+
+
+    document.getElementById(
+        "editTelegram"
+    ).value =
+        currentProfile.telegram
+        || "";
+
+
+    document.getElementById(
+        "editDiscord"
+    ).value =
+        currentProfile.discord
+        || "";
+
+
+    document.getElementById(
+        "editWebsite"
+    ).value =
+        currentProfile.website
+        || "";
+
+}
+
+
+async function saveSettings(){
+
+    const status =
+        document.getElementById(
+            "editStatus"
+        );
+
+
+    const updates = {
+
+        username:
+            document.getElementById(
+                "editUsername"
+            ).value.trim()
+            || null,
+
+        bio:
+            document.getElementById(
+                "editBio"
+            ).value.trim()
+            || null,
+
+        avatar_url:
+            document.getElementById(
+                "editAvatar"
+            ).value.trim()
+            || null,
+
+        instagram:
+            document.getElementById(
+                "editInstagram"
+            ).value.trim()
+            || null,
+
+        telegram:
+            document.getElementById(
+                "editTelegram"
+            ).value.trim()
+            || null,
+
+        discord:
+            document.getElementById(
+                "editDiscord"
+            ).value.trim()
+            || null,
+
+        website:
+            document.getElementById(
+                "editWebsite"
+            ).value.trim()
+            || null
+
+    };
+
+
+    const {
+        data,
+        error
+    } =
+    await db
+        .from("profiles")
+        .update(updates)
+        .eq(
+            "id",
+            currentUser.id
+        )
+        .select()
+        .single();
+
+
+    if(error){
+
+        status.className =
+            "status show error";
+
+        status.textContent =
+            error.message;
+
+        return;
+    }
+
+
+    currentProfile =
+        data;
+
+
+    renderMyProfile();
+
+
+    status.className =
+        "status show success";
+
+    status.textContent =
+        t("saved");
+
+
+    setTimeout(
+        () => {
+
+            status.className =
+                "status";
+
+        },
+        2500
+    );
+
+}
+
+
+/* =========================================================
+   FEED
+========================================================= */
+
+async function loadFeed(){
+
+    const feed =
+        document.getElementById(
+            "feed"
+        );
+
+
+    const {
+        data,
+        error
+    } =
+    await db
+        .from("posts")
+        .select(`
+            *,
+            profiles(
+                id,
+                first_name,
+                last_name,
+                username,
+                class_name,
+                avatar_url
+            )
+        `)
+        .order(
+            "created_at",
+            {
+                ascending:false
+            }
+        );
+
+
+    if(error){
+
+        feed.innerHTML = `
+            <div class="card">
+                ${escapeHtml(
+                    error.message
+                )}
+            </div>
+        `;
+
+        return;
+    }
+
+
+    allPosts =
+        data || [];
+
+
+    if(!allPosts.length){
+
+        feed.innerHTML = `
+            <div class="card empty">
+                ${t("noPosts")}
+            </div>
+        `;
+
+        return;
+    }
+
+
+    feed.innerHTML = "";
+
+
+    for(
+        const post of allPosts
+    ){
+
+        await renderPost(post);
+
+    }
+
+}
+
+
+/* =========================================================
+   CREATE POST
+========================================================= */
+
+async function createPost(){
+
+    const content =
+        document.getElementById(
+            "postContent"
+        ).value.trim();
+
+
+    const image =
+        document.getElementById(
+            "postImage"
+        ).value.trim();
+
+
+    if(
+        !content &&
+        !image
+    ){
+
+        return;
+    }
+
+
+    const {
+        error
+    } =
+    await db
+        .from("posts")
+        .insert({
+
+            user_id:
+                currentUser.id,
+
+            content:
+                content || null,
+
+            image_url:
+                image || null
+
+        });
+
+
+    if(error){
+
+        alert(error.message);
+
+        return;
+    }
+
+
+    document.getElementById(
+        "postContent"
+    ).value = "";
+
+
+    document.getElementById(
+        "postImage"
+    ).value = "";
+
+
+    await loadFeed();
+
+}
+
+
+/* =========================================================
+   RENDER POST
+========================================================= */
+
+async function renderPost(post){
+
+    const feed =
+        document.getElementById(
+            "feed"
+        );
+
+
+    const author =
+        post.profiles || {};
+
+
+    const fullName =
+        `${author.first_name || ""}
+        ${author.last_name || ""}`
+        .trim()
+        ||
+        "User";
+
+
+    const avatar =
+        getAvatar(author);
+
+
+    const {
+        data:likes
+    } =
+    await db
+        .from("likes")
+        .select("user_id")
+        .eq(
+            "post_id",
+            post.id
+        );
+
+
+    const likeList =
+        likes || [];
+
+
+    const liked =
+        likeList.some(
+            item =>
+                item.user_id ===
+                currentUser.id
+        );
+
+
+    const {
+        data:comments
+    } =
+    await db
+        .from("comments")
+        .select(`
+            *,
+            profiles(
+                first_name,
+                last_name,
+                username,
+                avatar_url
+            )
+        `)
+        .eq(
+            "post_id",
+            post.id
+        )
+        .order(
+            "created_at",
+            {
+                ascending:true
+            }
+        );
+
+
+    const commentList =
+        comments || [];
+
+
+    let commentsHTML = "";
+
+
+    commentList.forEach(
+        comment => {
+
+            const profile =
+                comment.profiles
+                || {};
+
+
+            const name =
+                `${profile.first_name || ""}
+                ${profile.last_name || ""}`
+                .trim()
+                ||
+                "User";
+
+
+            commentsHTML += `
+
+                <div class="comment">
+
+                    <div class="comment-name">
+                        ${escapeHtml(name)}
+                    </div>
+
+                    <div class="comment-text">
+                        ${escapeHtml(
+                            comment.content
+                        )}
+                    </div>
+
+                </div>
+
+            `;
+
+        }
+    );
+
+
+    const postElement =
+        document.createElement(
+            "div"
+        );
+
+
+    postElement.className =
+        "post";
+
+
+    postElement.innerHTML = `
+
+        <div class="post-header">
+
+            <img
+                class="post-avatar"
+                src="${escapeAttribute(
+                    avatar
+                )}"
+            >
+
+
+            <div>
+
+                <div class="post-name">
+                    ${escapeHtml(
+                        fullName
+                    )}
+                </div>
+
+                <div class="post-meta">
+                    ${formatDate(
+                        post.created_at
+                    )}
+                </div>
+
+            </div>
+
+        </div>
+
+
+        ${
+            post.content
+            ?
+            `
+                <div class="post-content">
+                    ${escapeHtml(
+                        post.content
+                    )}
+                </div>
+            `
+            :
+            ""
+        }
+
+
+        ${
+            post.image_url
+            ?
+            `
+                <img
+                    class="post-image"
+                    src="${escapeAttribute(
+                        post.image_url
+                    )}"
+                    onerror="this.style.display='none'"
+                >
+            `
+            :
+            ""
+        }
+
+
+        <div class="post-actions">
+
+            <button
+                class="post-action ${
+                    liked
+                    ? "active"
+                    : ""
+                }"
+                onclick="toggleLike('${post.id}')"
+            >
+                ${liked ? "Liked" : "Like"}
+                · ${likeList.length}
+            </button>
+
+
+            <button
+                class="post-action"
+                onclick="focusComment('${post.id}')"
+            >
+                Comment · ${commentList.length}
+            </button>
+
+
+            ${
+                post.user_id ===
+                currentUser.id
+                ?
+                `
+                    <button
+                        class="post-action post-delete"
+                        onclick="deletePost('${post.id}')"
+                    >
+                        Delete
+                    </button>
+                `
+                :
+                ""
+            }
+
+        </div>
+
+
+        <div class="comments">
+
+            ${commentsHTML}
+
+
+            <div class="comment-form">
+
+                <input
+                    id="comment-${post.id}"
+                    class="comment-input"
+                    placeholder="Write a comment..."
+                >
+
+
+                <button
+                    class="comment-send"
+                    onclick="addComment('${post.id}')"
+                >
+                    →
+                </button>
+
+            </div>
+
+        </div>
+
+    `;
+
+
+    feed.appendChild(
+        postElement
+    );
+
+}
+
+
+/* =========================================================
+   LIKE
+========================================================= */
+
+async function toggleLike(postId){
+
+    const {
+        data
+    } =
+    await db
+        .from("likes")
+        .select("id")
+        .eq(
+            "post_id",
+            postId
+        )
+        .eq(
+            "user_id",
+            currentUser.id
+        )
+        .maybeSingle();
+
+
+    if(data){
+
+        await db
+            .from("likes")
+            .delete()
+            .eq(
+                "id",
+                data.id
+            );
+
+    }else{
+
+        await db
+            .from("likes")
+            .insert({
+
+                post_id:
+                    postId,
+
+                user_id:
+                    currentUser.id
+
+            });
+
+
+        await createNotificationForPost(
+            postId,
+            "like"
+        );
+
+    }
+
+
+    await loadFeed();
+
+}
+
+
+/* =========================================================
+   COMMENT
+========================================================= */
+
+async function addComment(postId){
+
+    const input =
+        document.getElementById(
+            "comment-" + postId
+        );
+
+
+    const content =
+        input.value.trim();
+
+
+    if(!content){
+
+        return;
+    }
+
+
+    const {
+        error
+    } =
+    await db
+        .from("comments")
+        .insert({
+
+            post_id:
+                postId,
+
+            user_id:
+                currentUser.id,
+
+            content
+
+        });
+
+
+    if(error){
+
+        alert(error.message);
+
+        return;
+    }
+
+
+    input.value = "";
+
+
+    await createNotificationForPost(
+        postId,
+        "comment"
+    );
+
+
+    await loadFeed();
+
+}
+
+
+/* =========================================================
+   DELETE POST
+========================================================= */
+
+async function deletePost(postId){
+
+    if(
+        !confirm(
+            t("deletePost")
+        )
+    ){
+
+        return;
+    }
+
+
+    const {
+        error
+    } =
+    await db
+        .from("posts")
+        .delete()
+        .eq(
+            "id",
+            postId
+        )
+        .eq(
+            "user_id",
+            currentUser.id
+        );
+
+
+    if(error){
+
+        alert(error.message);
+
+        return;
+    }
+
+
+    await loadFeed();
+
+}
+
+
+/* =========================================================
+   POST NOTIFICATION
+========================================================= */
+
+async function createNotificationForPost(
+    postId,
+    type
+){
+
+    const {
+        data:post
+    } =
+    await db
+        .from("posts")
+        .select("user_id")
+        .eq(
+            "id",
+            postId
+        )
+        .maybeSingle();
+
+
+    if(!post){
+
+        return;
+    }
+
+
+    if(
+        post.user_id ===
+        currentUser.id
+    ){
+
+        return;
+    }
+
+
+    const message =
+        type === "like"
+        ?
+        "Someone liked your post."
+        :
+        "Someone commented on your post.";
+
+
+    await db
+        .from("notifications")
+        .insert({
+
+            user_id:
+                post.user_id,
+
+            actor_id:
+                currentUser.id,
+
+            type,
+
+            post_id:
+                postId,
+
+            message
+
+        });
+
+}
+
+
+/* =========================================================
+   STUDENTS
+========================================================= */
+
+async function loadStudents(){
+
+    const {
+        data,
+        error
+    } =
+    await db
+        .from("profiles")
+        .select("*")
+        .order(
+            "first_name",
+            {
+                ascending:true
+            }
+        );
+
+
+    if(error){
+
+        document.getElementById(
+            "studentsGrid"
+        ).innerHTML =
+            `<div class="card">
+                ${escapeHtml(
+                    error.message
+                )}
+            </div>`;
+
+        return;
+    }
+
+
+    allStudents =
+        data || [];
+
+
+    renderStudents(
+        allStudents
+    );
+
+}
+
+
+function filterStudents(){
+
+    const search =
+        document.getElementById(
+            "studentSearch"
+        )
+        .value
+        .trim()
+        .toLowerCase();
+
+
+    const className =
+        document.getElementById(
+            "classFilter"
+        ).value;
+
+
+    const filtered =
+        allStudents.filter(
+            student => {
+
+                const name =
+                    `${student.first_name || ""}
+                    ${student.last_name || ""}`
+                    .toLowerCase();
+
+
+                const username =
+                    (
+                        student.username
+                        || ""
+                    )
+                    .toLowerCase();
+
+
+                const searchMatch =
+                    !search
+                    ||
+                    name.includes(search)
+                    ||
+                    username.includes(search);
+
+
+                const classMatch =
+                    !className
+                    ||
+                    student.class_name ===
+                    className;
+
+
+                return (
+                    searchMatch &&
+                    classMatch
+                );
+
+            }
+        );
+
+
+    renderStudents(
+        filtered
+    );
+
+}
+
+
+function renderStudents(
+    students
+){
+
+    const grid =
+        document.getElementById(
+            "studentsGrid"
+        );
+
+
+    if(!students.length){
+
+        grid.innerHTML = `
+            <div class="card empty">
+                ${t("noStudents")}
+            </div>
+        `;
+
+        return;
+    }
+
+
+    grid.innerHTML = "";
+
+
+    students.forEach(
+        student => {
+
+            const name =
+                `${student.first_name || ""}
+                ${student.last_name || ""}`
+                .trim()
+                ||
+                "User";
+
+
+            const avatar =
+                getAvatar(student);
+
+
+            grid.innerHTML += `
+
+                <div class="student-card">
+
+                    <div class="student-top">
+
+                        <img
+                            class="student-avatar"
+                            src="${escapeAttribute(
+                                avatar
+                            )}"
+                        >
+
+
+                        <div>
+
+                            <div class="student-name">
+                                ${escapeHtml(
+                                    name
+                                )}
+                            </div>
+
+                            <div class="student-class">
+                                ${escapeHtml(
+                                    student.class_name
+                                    || "—"
+                                )}
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    ${
+                        student.bio
+                        ?
+                        `
+                            <div class="student-bio">
+                                ${escapeHtml(
+                                    student.bio
+                                )}
+                            </div>
+                        `
+                        :
+                        ""
+                    }
+
+
+                    <button
+                        class="secondary-button student-button"
+                        onclick="openProfile('${student.id}')"
+                    >
+                        ${t("openProfile")}
+                    </button>
+
+                </div>
+
+            `;
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   PROFILE MODAL
+========================================================= */
+
+async function openProfile(
+    userId
+){
+
+    const modal =
+        document.getElementById(
+            "profileModal"
+        );
+
+
+    const content =
+        document.getElementById(
+            "modalProfile"
+        );
+
+
+    modal.classList.add(
+        "show"
+    );
+
+
+    content.innerHTML =
+        `<div class="loading">
+            Loading...
+        </div>`;
+
+
+    const {
+        data:user
+    } =
+    await db
+        .from("profiles")
+        .select("*")
+        .eq(
+            "id",
+            userId
+        )
+        .maybeSingle();
+
+
+    if(!user){
+
+        content.textContent =
+            "Profile not found.";
+
+        return;
+    }
+
+
+    const name =
+        `${user.first_name || ""}
+        ${user.last_name || ""}`
+        .trim()
+        ||
+        "User";
+
+
+    const avatar =
+        getAvatar(user);
+
+
+    if(
+        user.id ===
+        currentUser.id
+    ){
+
+        content.innerHTML = `
+
+            <div style="text-align:center">
+
+                <img
+                    class="profile-avatar-large"
+                    src="${escapeAttribute(
+                        avatar
+                    )}"
+                >
+
+
+                <div class="profile-name-large">
+                    ${escapeHtml(
+                        name
+                    )}
+                </div>
+
+
+                <div class="profile-class">
+                    ${escapeHtml(
+                        user.class_name
+                        || "—"
+                    )}
+                </div>
+
+            </div>
+
+
+            <div class="profile-bio">
+                ${escapeHtml(
+                    user.bio || "—"
+                )}
+            </div>
+
+
+            <div class="socials">
+                ${socialLinks(user)}
+            </div>
+
+        `;
+
+        return;
+    }
+
+
+    const {
+        data:request
+    } =
+    await db
+        .from("friend_requests")
+        .select("*")
+        .or(
+            `and(sender_id.eq.${currentUser.id},receiver_id.eq.${user.id}),and(sender_id.eq.${user.id},receiver_id.eq.${currentUser.id})`
+        )
+        .maybeSingle();
+
+
+    const {
+        data:friendship
+    } =
+    await db
+        .from("friends")
+        .select("*")
+        .or(
+            `and(user_id.eq.${currentUser.id},friend_id.eq.${user.id}),and(user_id.eq.${user.id},friend_id.eq.${currentUser.id})`
+        )
+        .maybeSingle();
+
+
+    let action = "";
+
+
+    if(friendship){
+
+        action = `
+            <button
+                class="secondary-button"
+            >
+                ${t("youAreFriends")}
+            </button>
+        `;
+
+    }else if(
+        request &&
+        request.status ===
+        "pending"
+    ){
+
+        if(
+            request.receiver_id ===
+            currentUser.id
+        ){
+
+            action = `
+                <button
+                    class="primary-button"
+                    onclick="acceptRequest(
+                        '${request.id}',
+                        '${user.id}'
+                    )"
+                >
+                    ${t("accept")}
+                </button>
+            `;
+
+        }else{
+
+            action = `
+                <button
+                    class="secondary-button"
+                >
+                    ${t("requestSent")}
+                </button>
+            `;
+
+        }
+
+    }else{
+
+        action = `
+            <button
+                class="primary-button"
+                onclick="sendFriendRequest(
+                    '${user.id}'
+                )"
+            >
+                ${t("addFriend")}
+            </button>
+        `;
+
+    }
+
+
+    content.innerHTML = `
+
+        <div style="text-align:center">
+
+            <img
+                class="profile-avatar-large"
+                src="${escapeAttribute(
+                    avatar
+                )}"
+            >
+
+
+            <div class="profile-name-large">
+                ${escapeHtml(
+                    name
+                )}
+            </div>
+
+
+            ${
+                user.username
+                ?
+                `
+                    <div class="profile-username">
+                        @${escapeHtml(
+                            user.username
+                        )}
+                    </div>
+                `
+                :
+                ""
+            }
+
+
+            <div class="profile-class">
+                ${escapeHtml(
+                    user.class_name
+                    || "—"
+                )}
+            </div>
+
+        </div>
+
+
+        <div class="profile-bio">
+            ${escapeHtml(
+                user.bio || "—"
+            )}
+        </div>
+
+
+        <div class="socials">
+            ${socialLinks(user)}
+        </div>
+
+
+        <div class="profile-buttons">
+            ${action}
+        </div>
+
+    `;
+
+}
+
+
+function closeProfileModal(){
+
+    document
+        .getElementById(
+            "profileModal"
+        )
+        .classList.remove(
+            "show"
+        );
+
+}
+
+
+function closeModal(event){
+
+    if(
+        event.target.id ===
+        "profileModal"
+    ){
+
+        closeProfileModal();
+
+    }
+
+}
+
+
+/* =========================================================
+   FRIEND REQUESTS
+========================================================= */
+
+async function sendFriendRequest(
+    receiverId
+){
+
+    const {
+        error
+    } =
+    await db
+        .from("friend_requests")
+        .insert({
+
+            sender_id:
+                currentUser.id,
+
+            receiver_id:
+                receiverId,
+
+            status:
+                "pending"
+
+        });
+
+
+    if(error){
+
+        alert(error.message);
+
+        return;
+    }
+
+
+    await db
+        .from("notifications")
+        .insert({
+
+            user_id:
+                receiverId,
+
+            actor_id:
+                currentUser.id,
+
+            type:
+                "friend_request",
+
+            message:
+                "Someone sent you a friend request."
+
+        });
+
+
+    alert(
+        t("requestSent")
+    );
+
+
+    closeProfileModal();
+
+}
+
+
+async function acceptRequest(
+    requestId,
+    senderId
+){
+
+    const {
+        error
+    } =
+    await db
+        .from("friend_requests")
+        .update({
+            status:"accepted"
+        })
+        .eq(
+            "id",
+            requestId
+        )
+        .eq(
+            "receiver_id",
+            currentUser.id
+        );
+
+
+    if(error){
+
+        alert(error.message);
+
+        return;
+    }
+
+
+    await db
+        .from("friends")
+        .insert({
+
+            user_id:
+                currentUser.id,
+
+            friend_id:
+                senderId
+
+        });
+
+
+    await db
+        .from("friends")
+        .insert({
+
+            user_id:
+                senderId,
+
+            friend_id:
+                currentUser.id
+
+        });
+
+
+    await db
+        .from("notifications")
+        .insert({
+
+            user_id:
+                senderId,
+
+            actor_id:
+                currentUser.id,
+
+            type:
+                "friend_accepted",
+
+            message:
+                "Your friend request was accepted."
+
+        });
+
+
+    closeProfileModal();
+
+    await loadFriends();
+
+}
+
+
+/* =========================================================
+   FRIENDS
+========================================================= */
+
+async function loadFriends(){
+
+    const incoming =
+        document.getElementById(
+            "incomingRequests"
+        );
+
+
+    const friendsList =
+        document.getElementById(
+            "friendsList"
+        );
+
+
+    const {
+        data:requests
+    } =
+    await db
+        .from("friend_requests")
+        .select(`
+            *,
+            profiles:sender_id(
+                id,
+                first_name,
+                last_name,
+                username,
+                class_name,
+                avatar_url
+            )
+        `)
+        .eq(
+            "receiver_id",
+            currentUser.id
+        )
+        .eq(
+            "status",
+            "pending"
+        )
+        .order(
+            "created_at",
+            {
+                ascending:false
+            }
+        );
+
+
+    if(
+        !requests ||
+        !requests.length
+    ){
+
+        incoming.innerHTML = `
+            <div class="empty">
+                ${t("noRequests")}
+            </div>
+        `;
+
+    }else{
+
+        incoming.innerHTML = "";
+
+
+        requests.forEach(
+            request => {
+
+                const user =
+                    request.profiles;
+
+
+                const name =
+                    `${user.first_name || ""}
+                    ${user.last_name || ""}`
+                    .trim();
+
+
+                incoming.innerHTML += `
+
+                    <div class="friend-row">
+
+                        <div class="friend-user">
+
+                            <img
+                                class="friend-avatar"
+                                src="${escapeAttribute(
+                                    getAvatar(user)
+                                )}"
+                            >
+
+
+                            <div>
+
+                                <div class="friend-name">
+                                    ${escapeHtml(
+                                        name
+                                    )}
+                                </div>
+
+                                <div class="friend-class">
+                                    ${escapeHtml(
+                                        user.class_name
+                                        || ""
+                                    )}
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <button
+                            class="primary-button"
+                            onclick="acceptRequest(
+                                '${request.id}',
+                                '${user.id}'
+                            )"
+                        >
+                            ${t("accept")}
+                        </button>
+
+                    </div>
+
+                `;
+
+            }
+        );
+
+    }
+
+
+    const {
+        data:friendRows
+    } =
+    await db
+        .from("friends")
+        .select(`
+            *,
+            profiles:friend_id(
+                id,
+                first_name,
+                last_name,
+                username,
+                class_name,
+                avatar_url
+            )
+        `)
+        .eq(
+            "user_id",
+            currentUser.id
+        );
+
+
+    if(
+        !friendRows ||
+        !friendRows.length
+    ){
+
+        friendsList.innerHTML = `
+            <div class="empty">
+                ${t("noFriends")}
+            </div>
+        `;
+
+        return;
+    }
+
+
+    friendsList.innerHTML = "";
+
+
+    friendRows.forEach(
+        row => {
+
+            const user =
+                row.profiles;
+
+
+            const name =
+                `${user.first_name || ""}
+                ${user.last_name || ""}`
+                .trim();
+
+
+            friendsList.innerHTML += `
+
+                <div class="friend-row">
+
+                    <div class="friend-user">
+
+                        <img
+                            class="friend-avatar"
+                            src="${escapeAttribute(
+                                getAvatar(user)
+                            )}"
+                        >
+
+
+                        <div>
+
+                            <div class="friend-name">
+                                ${escapeHtml(
+                                    name
+                                )}
+                            </div>
+
+                            <div class="friend-class">
+                                ${escapeHtml(
+                                    user.class_name
+                                    || ""
+                                )}
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <button
+                        class="secondary-button"
+                        onclick="openProfile(
+                            '${user.id}'
+                        )"
+                    >
+                        ${t("openProfile")}
+                    </button>
+
+                </div>
+
+            `;
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   NOTIFICATIONS
+========================================================= */
+
+async function loadNotifications(){
+
+    const container =
+        document.getElementById(
+            "notificationsList"
+        );
+
+
+    const {
+        data,
+        error
+    } =
+    await db
+        .from("notifications")
+        .select(`
+            *,
+            profiles:actor_id(
+                first_name,
+                last_name
+            )
+        `)
+        .eq(
+            "user_id",
+            currentUser.id
+        )
+        .order(
+            "created_at",
+            {
+                ascending:false
+            }
+        )
+        .limit(50);
+
+
+    if(error){
+
+        container.innerHTML = `
+            <div class="card">
+                ${escapeHtml(
+                    error.message
+                )}
+            </div>
+        `;
+
+        return;
+    }
+
+
+    if(
+        !data ||
+        !data.length
+    ){
+
+        container.innerHTML = `
+            <div class="card empty">
+                ${t("noNotifications")}
+            </div>
+        `;
+
+        return;
+    }
+
+
+    container.innerHTML = "";
+
+
+    data.forEach(
+        notification => {
+
+            const actor =
+                notification.profiles;
+
+
+            const name =
+                actor
+                ?
+                `${actor.first_name || ""}
+                ${actor.last_name || ""}`
+                .trim()
+                :
+                "User";
+
+
+            container.innerHTML += `
+
+                <div
+                    class="notification ${
+                        notification.is_read
+                        ? ""
+                        : "unread"
+                    }"
+                >
+
+                    <div class="notification-text">
+
+                        <strong>
+                            ${escapeHtml(
+                                name
+                            )}
+                        </strong>
+
+                        ${escapeHtml(
+                            notification.message
+                            || ""
+                        )}
+
+                    </div>
+
+
+                    <div class="notification-date">
+                        ${formatDate(
+                            notification.created_at
+                        )}
+                    </div>
+
+                </div>
+
+            `;
+
+        }
+    );
+
+
+    await db
+        .from("notifications")
+        .update({
+            is_read:true
+        })
+        .eq(
+            "user_id",
+            currentUser.id
+        )
+        .eq(
+            "is_read",
+            false
+        );
+
+}
+
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+function showPage(
+    pageId,
+    button
+){
+
+    document
+        .querySelectorAll(".page")
+        .forEach(
+            page => {
+                page.classList.remove(
+                    "active"
+                );
+            }
+        );
+
+
+    const page =
+        document.getElementById(
+            pageId
+        );
+
+
+    if(page){
+
+        page.classList.add(
+            "active"
+        );
+
+    }
+
+
+    document
+        .querySelectorAll(
+            ".nav-button"
+        )
+        .forEach(
+            btn => {
+                btn.classList.remove(
+                    "active"
+                );
+            }
+        );
+
+
+    if(button){
+
+        button.classList.add(
+            "active"
+        );
+
+    }
+
+
+    if(
+        pageId ===
+        "studentsPage"
+    ){
+
+        loadStudents();
+
+    }
+
+
+    if(
+        pageId ===
+        "friendsPage"
+    ){
+
+        loadFriends();
+
+    }
+
+
+    if(
+        pageId ===
+        "notificationsPage"
+    ){
+
+        loadNotifications();
+
+    }
+
+}
+
+
+function showPageById(
+    pageId
+){
+
+    document
+        .querySelectorAll(".page")
+        .forEach(
+            page => {
+                page.classList.remove(
+                    "active"
+                );
+            }
+        );
+
+
+    document
+        .getElementById(
+            pageId
+        )
+        .classList.add(
+            "active"
+        );
+
+
+    if(
+        pageId ===
+        "settingsPage"
+    ){
+
+        fillSettings();
+
+    }
+
+}
+
+
+/* =========================================================
+   HELPERS
+========================================================= */
+
+function focusComment(
+    postId
+){
+
+    const input =
+        document.getElementById(
+            "comment-" + postId
+        );
+
+
+    if(input){
+
+        input.focus();
+
+    }
+
+}
+
+
+function getAvatar(
+    user
+){
+
+    const name =
+        `${user.first_name || ""}
+        ${user.last_name || ""}`
+        .trim()
+        ||
+        "User";
+
+
+    return (
+        user.avatar_url
+        ||
+        "https://ui-avatars.com/api/?name="
+        +
+        encodeURIComponent(name)
+        +
+        "&background=e9e2dc&color=5f5044"
+    );
+
+}
+
+
+function socialLinks(
+    user
+){
+
+    let html = "";
+
+
+    if(user.instagram){
+
+        let link =
+            user.instagram;
+
+
+        if(
+            !link.startsWith("http")
+        ){
+
+            link =
+                "https://instagram.com/"
+                +
+                link.replace(
+                    "@",
+                    ""
+                );
+
+        }
+
+
+        html += `
+
+            <a
+                class="social"
+                href="${escapeAttribute(
+                    link
+                )}"
+                target="_blank"
+            >
+                Instagram
+            </a>
+
+        `;
+
+    }
+
+
+    if(user.telegram){
+
+        let link =
+            user.telegram;
+
+
+        if(
+            !link.startsWith("http")
+        ){
+
+            link =
+                "https://t.me/"
+                +
+                link.replace(
+                    "@",
+                    ""
+                );
+
+        }
+
+
+        html += `
+
+            <a
+                class="social"
+                href="${escapeAttribute(
+                    link
+                )}"
+                target="_blank"
+            >
+                Telegram
+            </a>
+
+        `;
+
+    }
+
+
+    if(user.discord){
+
+        html += `
+
+            <span class="social">
+                Discord:
+                ${escapeHtml(
+                    user.discord
+                )}
+            </span>
+
+        `;
+
+    }
+
+
+    if(user.website){
+
+        let link =
+            user.website;
+
+
+        if(
+            !link.startsWith("http")
+        ){
+
+            link =
+                "https://" +
+                link;
+
+        }
+
+
+        html += `
+
+            <a
+                class="social"
+                href="${escapeAttribute(
+                    link
+                )}"
+                target="_blank"
+            >
+                Website
+            </a>
+
+        `;
+
+    }
+
+
+    return html;
+
+}
+
+
+function formatDate(
+    date
+){
+
+    if(!date){
+
+        return "";
+
+    }
+
+
+    return new Date(date)
+        .toLocaleString(
+            currentLanguage === "ru"
+            ? "ru-RU"
+            :
+            currentLanguage === "kz"
+            ? "kk-KZ"
+            :
+            "en-US",
+            {
+                day:"2-digit",
+                month:"2-digit",
+                year:"numeric",
+                hour:"2-digit",
+                minute:"2-digit"
+            }
+        );
+
+}
+
+
+function escapeHtml(
+    value
+){
+
+    return String(
+        value ?? ""
+    )
+    .replace(
+        /&/g,
+        "&amp;"
+    )
+    .replace(
+        /</g,
+        "&lt;"
+    )
+    .replace(
+        />/g,
+        "&gt;"
+    )
+    .replace(
+        /"/g,
+        "&quot;"
+    )
+    .replace(
+        /'/g,
+        "&#039;"
+    );
+
+}
+
+
+function escapeAttribute(
+    value
+){
+
+    return escapeHtml(
+        value
+    );
+
+}
+
+
+/* =========================================================
+   LOGOUT
+========================================================= */
+
+async function logout(){
+
+    await db.auth.signOut();
+
+    window.location.href =
+        "auth.html";
+
+}
+
+</script>
+
+</body>
+</html>
